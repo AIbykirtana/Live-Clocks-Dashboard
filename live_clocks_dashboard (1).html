@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Clocks Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #e0f7fa, #e1bee7);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #4a148c;
+            margin-bottom: 30px;
+        }
+        .clock-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .clock {
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            padding: 20px;
+            width: 200px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        .clock.business-hours {
+            background-color: #c8e6c9;
+        }
+        .country {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #6a1b9a;
+        }
+        .time {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Live Clocks Dashboard</h1>
+    <div class="clock-container" id="clocks"></div>
+
+    <script>
+        const countries = {
+            "Cameroon": "Africa/Douala",
+            "Morocco": "Africa/Casablanca",
+            "Senegal": "Africa/Dakar",
+            "Montreal": "America/Montreal",
+            "Tunisia": "Africa/Tunis",
+            "Algeria": "Africa/Algiers",
+            "France": "Europe/Paris",
+            "Haiti": "America/Port-au-Prince",
+            "Ivory Coast": "Africa/Abidjan"
+        };
+
+        function updateClocks() {
+            const container = document.getElementById("clocks");
+            container.innerHTML = "";
+
+            for (const [country, timezone] of Object.entries(countries)) {
+                const now = new Date().toLocaleString("en-US", { timeZone: timezone });
+                const date = new Date(now);
+                const hours = date.getHours();
+                const minutes = date.getMinutes().toString().padStart(2, '0');
+                const seconds = date.getSeconds().toString().padStart(2, '0');
+                const isBusinessHours = hours >= 9;
+
+                const clockDiv = document.createElement("div");
+                clockDiv.className = "clock" + (isBusinessHours ? " business-hours" : "");
+                clockDiv.innerHTML = `
+                    <div class="country">${country}</div>
+                    <div class="time">${hours}:${minutes}:${seconds}</div>
+                `;
+                container.appendChild(clockDiv);
+            }
+        }
+
+        setInterval(updateClocks, 1000);
+        updateClocks();
+    </script>
+</body>
+</html>
